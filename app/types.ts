@@ -40,3 +40,10 @@ export interface Set {
 	weight_unit: WeightUnit;
 	id: number;
 }
+
+export interface SetInput {
+	lift: string;
+	reps: number;
+	weight: number;
+	weight_unit: WeightUnit;
+}

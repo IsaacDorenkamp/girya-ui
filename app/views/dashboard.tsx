@@ -18,8 +18,10 @@ export default function Dashboard() {
 			: (error
 				? error.response?.data.detail ?? "Unknown Error"
 				: (workoutsPending ? <Loading /> : "Something went wrong."))}
-		<Button disabled={creatingWorkout} onClick={() => {
-			createWorkout({ at: date.toISOString().split("T")[0], split: "upper-body" });
-		}}>{creatingWorkout ? "Starting..." : "Start New Workout"}</Button>
+		{(workouts?.length ?? 0) === 0 ?
+			<Button disabled={creatingWorkout} onClick={() => {
+				createWorkout({ at: date.toISOString().split("T")[0], split: "upper-body" });
+			}}>{creatingWorkout ? "Starting..." : "Start New Workout"}</Button>
+			: undefined}
 	</Container>;
 }

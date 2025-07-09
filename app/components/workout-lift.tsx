@@ -4,7 +4,7 @@ import Table from "react-bootstrap/Table";
 
 import type { Lift, Set } from "../types";
 import useCreateWorkoutSet from "../hooks/use-create-workout-set";
-import useDeleteWorkoutSet from "../hooks/use-delete-workout-set";
+import WorkoutSet from "./workout-set";
 
 interface WorkoutLiftProps {
 	workout: string;
@@ -14,10 +14,9 @@ interface WorkoutLiftProps {
 
 export default function WorkoutLift({ workout, sets, lift }: WorkoutLiftProps) {
 	const { mutate: createSet, isPending: creatingSet } = useCreateWorkoutSet();
-	const { mutate: deleteSet, isPending: deletingSet } = useDeleteWorkoutSet(workout);
 	return <Accordion defaultActiveKey="item">
 		<Accordion.Item eventKey="item">
-			<Accordion.Header><h5>{lift.name}</h5></Accordion.Header>
+			<Accordion.Header><h5>{lift.name}&nbsp;<i className="text-muted">({sets.length} set{sets.length !== 1 ? "s" : ""})</i></h5></Accordion.Header>
 			<Accordion.Body>
 				{sets.length > 0 ? <Table>
 					<thead>
@@ -25,16 +24,11 @@ export default function WorkoutLift({ workout, sets, lift }: WorkoutLiftProps) {
 							<td>Reps</td>
 							<td>Weight</td>
 							<td></td>
+							<td></td>
 						</tr>
 					</thead>
 					<tbody>
-						{sets.map(set => 
-							<tr key={`set-${set.id}`}>
-								<td>{set.reps}</td>
-								<td>{set.weight}{set.weight_unit}</td>
-								<td><Button onClick={() => deleteSet(set.id)} disabled={deletingSet}>{deletingSet ? "Deleting..." : "Delete"}</Button></td>
-							</tr>
-						)}
+						{sets.map(set => <WorkoutSet set={set} workout={workout} key={`set-${set.id}`} />)}
 					</tbody>
 				</Table>: <div className="mb-3">No sets recorded.</div>}
 				<Button disabled={creatingSet} onClick={() => {

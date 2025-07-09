@@ -20,7 +20,6 @@ export default function AuthProvider(props: React.PropsWithChildren) {
 		});
 
 		client.interceptors.request.use((config) => {
-			// TODO - I don't want to do this right now
 			const token = localStorage.getItem("access_token");
 			config.headers["Authorization"] = `Bearer ${token}`;
 			return config;
