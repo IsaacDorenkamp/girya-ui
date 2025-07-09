@@ -19,7 +19,6 @@ export default function Login() {
 	useEffect(() => {
 		const token = localStorage.getItem("access_token");
 		const payload = token?.split(".")[1];
-		console.log("payload?", payload);
 		if (!payload) return;
 
 		let data;
@@ -28,7 +27,6 @@ export default function Login() {
 			data = JSON.parse(jsonSource);
 		} catch (_) {
 			// we can ignore an invalid token, that is OK
-			console.log("invalid token");
 			return;
 		}
 

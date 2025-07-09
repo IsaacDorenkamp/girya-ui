@@ -1,6 +1,4 @@
-import React from "react";
 import { Outlet } from "react-router";
-
 import { Container, Row, Col } from "react-bootstrap";
 
 

@@ -13,7 +13,6 @@ export default function useLogin(setError?: (error: string) => void) {
 			return response.data;
 		},
 		onSuccess: (tokens) => {
-			console.log("LOGGED IN!");
 			localStorage.setItem("access_token", tokens.access);
 			localStorage.setItem("refresh_token", tokens.refresh);
 			navigate("/dashboard");
