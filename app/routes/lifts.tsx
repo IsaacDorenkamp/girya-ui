@@ -3,7 +3,7 @@ import Lifts from "../views/lifts";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Lifts" },
+    { title: "Girya - Lifts" },
     { name: "description", content: "View available lifts." },
   ];
 }

@@ -10,10 +10,19 @@ export interface RegisterInfo {
 	password: string;
 }
 
+export interface ErrorResponse {
+	detail: string;
+}
+
 export interface Lift {
 	name: string;
 	slug: string;
 	id: number;
+}
+
+export interface LiftInput {
+	name: string;
+	slug: string;
 }
 
 export interface Split {

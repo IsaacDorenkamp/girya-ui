@@ -71,7 +71,7 @@ export default function WorkoutSet({ set, workout }: WorkoutSetProps) {
 			{set.weight_unit}
 		</td>
 		<td className="align-middle">
-			<Button onClick={toggleEditing} disabled={!valid}>
+			<Button onClick={toggleEditing} disabled={editing && !valid}>
 				{updatingSet ? "Saving..." : (editing ? "Save" : "Edit")}
 			</Button>
 		</td>
