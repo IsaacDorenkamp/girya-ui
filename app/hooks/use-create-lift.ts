@@ -7,7 +7,7 @@ import type { LiftInput, Lift, ErrorResponse } from "../types";
 export default function useCreateLift() {
 	const { client } = useAuthContext();
 	const queryClient = useQueryClient();
-	return useMutation<LiftInput, AxiosError<ErrorResponse>, Lift>({
+	return useMutation<Lift, AxiosError<ErrorResponse>, LiftInput>({
 		mutationFn: async (lift: LiftInput) => {
 			const response = await client.post<LiftInput, AxiosResponse<Lift>>("/api/lifts", lift);
 			return response.data;

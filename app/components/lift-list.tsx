@@ -1,4 +1,5 @@
 import { type ChangeEvent, useState } from "react";
+import type { AxiosError } from "axios";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
@@ -17,6 +18,7 @@ interface LiftListProps {
 export default function LiftList({ lifts, creating, setCreating }: LiftListProps) {
 	const [slug, setSlug] = useState<string>("");
 	const [name, setName] = useState<string>("");
+	const [error, setError] = useState<string | undefined>();
 
 	const [prevCreating, setPrevCreating] = useState<boolean | undefined>(creating);
 	if (prevCreating !== creating) {
@@ -39,18 +41,26 @@ export default function LiftList({ lifts, creating, setCreating }: LiftListProps
 	const { mutate: createLift, isPending: creatingLift, error: createError,
 		reset: resetCreate, isSuccess: liftCreated } = useCreateLift();
 
+	const [prevCreateError, setPrevCreateError] = useState<AxiosError | null>();
+	if (prevCreateError !== createError) {
+		setPrevCreateError(createError);
+		const error = createError?.response?.data.detail;
+		setError(error);
+	}
+
 	const [prevCreatingLift, setPrevCreatingLift] = useState<boolean>(creatingLift);
 	if (prevCreatingLift !== creatingLift) {
 		setPrevCreatingLift(creatingLift);
 		if (!creatingLift && liftCreated) {
 			setCreating && setCreating(false);
+			setError(undefined);
 		}
 	}
 
 	return (lifts.length === 0 && !creating) ? <><i>No lifts.</i><br /></> : 
 	<>
-		{createError?.response?.data && <Alert variant="danger" onClose={resetCreate} dismissible>
-			{createError.response.data.detail}
+		{error && <Alert variant="danger" onClose={() => setError(undefined)} dismissible>
+			{error}
 		</Alert>}
 		{liftCreated && <Alert variant="success" onClose={resetCreate} dismissible>
 			Lift created.
@@ -66,7 +76,7 @@ export default function LiftList({ lifts, creating, setCreating }: LiftListProps
 			</thead>
 			<tbody>
 				{lifts.map(
-					lift => <LiftItem lift={lift} />
+					lift => <LiftItem lift={lift} setError={setError} key={lift.slug} />
 				)}
 				{creating &&
 					<tr>

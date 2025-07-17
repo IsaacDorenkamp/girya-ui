@@ -17,7 +17,7 @@ export default function Dashboard() {
 		{workouts ? <WorkoutList workouts={workouts} />
 			: (error
 				? error.response?.data.detail ?? "Unknown Error"
-				: (workoutsPending ? <Loading /> : "Something went wrong."))}
+				: (workoutsPending ? <><Loading /><br /></> : "Something went wrong."))}
 		{(workouts?.length ?? 0) === 0 ?
 			<Button disabled={creatingWorkout} onClick={() => {
 				createWorkout({ at: date.toISOString().split("T")[0], split: "upper-body" });

@@ -9,7 +9,8 @@ export default [
 	]),
 
 	layout("./layouts/app-layout.tsx", [
+		route("/splits", "routes/splits.tsx"),
 		route("/lifts", "routes/lifts.tsx"),
-		route("/dashboard", "routes/dashboard.tsx")
+		route("/dashboard", "routes/dashboard.tsx"),
 	]),
 ] satisfies RouteConfig;
