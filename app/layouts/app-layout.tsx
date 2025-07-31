@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
-import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Row from "react-bootstrap/Row";
 import Tab from "react-bootstrap/Tab";
@@ -17,7 +16,7 @@ export default function Layout() {
 	}, [location]);
 
 	return <AuthProvider>
-		<Container className="mx-0 my-3">
+		<div className="mx-3 my-3">
 			<Row>
 				<Col xs={3}>
 					<Tab.Container activeKey={navKey} onSelect={(key) => navigate(`/${key}`)}>
@@ -38,6 +37,6 @@ export default function Layout() {
 					<Outlet />
 				</Col>
 			</Row>
-		</Container>
+		</div>
 	</AuthProvider>;
 }

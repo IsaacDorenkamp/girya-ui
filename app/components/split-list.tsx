@@ -21,7 +21,7 @@ function SplitEntry({ split }: SplitEntryProps) {
 	const [slug, setSlug] = useState<string>(split.slug);
 	const [name, setName] = useState<string>(split.name);
 	const { data: allLifts, isPending: loadingAllLifts } = useLifts();
-	const [lifts, setLifts] = useState<Lift[]>([]);
+	const [lifts, setLifts] = useState<Lift[]>(split.lifts);
 	const [selectedLift, setSelectedLift] = useState<string | undefined>();
 
 	const updateSlug = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,15 +51,36 @@ function SplitEntry({ split }: SplitEntryProps) {
 		}
 	};
 
+	const populateSelected = () => {
+		const liftSlugs = lifts.map(lift => lift.slug);
+		const liftSlug = allLifts?.find(lift => !liftSlugs.includes(lift.slug))?.slug;
+		setSelectedLift(liftSlug);
+	};
+	const updateSelected = () => {
+		// check whether we need to shift the selected lift
+		const existingLift = split.lifts.find(lift => lift.slug === selectedLift);
+		if (existingLift) {
+			const liftSlugs = lifts.map(lift => lift.slug);
+			const selectedLift = allLifts?.find(lift => !liftSlugs.includes(lift.slug))?.slug;
+			setSelectedLift(selectedLift);
+		}
+	};
+
+	const [,liftsChanged] = usePreviousValue(lifts);
 	const [,allLiftsChanged] = usePreviousValue(allLifts);
 	const [,splitLiftsChanged] = usePreviousValue(split.lifts);
 	const [,updatingSplitChanged] = usePreviousValue(updatingSplit);
-	if (allLiftsChanged && allLifts && (allLifts?.length ?? 0) > 0) {
-		setSelectedLift(allLifts[0].slug);
+	if (
+		(allLiftsChanged && allLifts && (allLifts?.length ?? 0) > 0) ||
+		(liftsChanged && selectedLift === undefined)
+	) {
+		if (!selectedLift) populateSelected();
+		updateSelected();
 	}
 	if (splitLiftsChanged) {
 		// occurs when split is reloaded from server
 		setLifts(split.lifts);
+		updateSelected();
 	}
 	if (updatingSplitChanged && editing && !updatingSplit) {
 		setEditing(false);
@@ -68,7 +89,7 @@ function SplitEntry({ split }: SplitEntryProps) {
 	const showLifts = allLifts?.filter(lift => lifts.findIndex(check => check.slug === lift.slug) === -1);
 	const options = showLifts?.length ?
 		showLifts?.map(lift => <option key={lift.slug}>{lift.name}</option>)
-			: <option disabled selected value="">{loadingAllLifts ? "Loading..." : "No more lifts"}</option>;
+			: <option disabled value="">{loadingAllLifts ? "Loading..." : "No more lifts"}</option>;
 
 	return <table className="p-0 w-100">
 		<tbody>
@@ -84,42 +105,45 @@ function SplitEntry({ split }: SplitEntryProps) {
 					{editing ? <input value={name} onChange={updateName} /> : split.name}
 				</td>
 			</tr>
-			<tr>
-				<td className="text-end align-middle">Lifts</td>
-				<td className="text-start align-middle w-100 px-3">
-					<Form.Select value={selectedLift} onChange={(event) => {
-						setSelectedLift(event.target.value);
-					}}>{options}</Form.Select>
-				</td>
-				<td>
-					<Button variant="success" disabled={!showLifts?.length} onClick={() => {
-						const lift = allLifts?.find(lift => lift.slug === selectedLift);
-						if (!lift) return;
-						const newLifts = [...lifts, lift];
-						setLifts(newLifts);
-						const nextLift = allLifts?.find(lift => newLifts.findIndex(check => check.slug === lift.slug) === -1);
-						setSelectedLift(nextLift?.slug);
-					}}>
-						Add
-					</Button>
-				</td>
-			</tr>
+			{editing ?
+				<tr>
+					<td className="text-end align-middle">Lifts</td>
+					<td className="text-start align-middle w-100 px-3">
+						<Form.Select value={selectedLift ?? ""} onChange={(event) => {
+							setSelectedLift(event.target.value);
+						}}>{options}</Form.Select>
+					</td>
+					<td>
+						<Button variant="success" disabled={!showLifts?.length} onClick={() => {
+							const lift = allLifts?.find(lift => lift.slug === selectedLift);
+							if (!lift) return;
+							const newLifts = [...lifts, lift];
+							setLifts(newLifts);
+							const nextLift = allLifts?.find(lift => newLifts.findIndex(check => check.slug === lift.slug) === -1);
+							setSelectedLift(nextLift?.slug);
+						}}>
+							Add
+						</Button>
+					</td>
+				</tr> : undefined}
 			{
 				lifts.length > 0 ?
-					lifts.map(lift => {
+					lifts.map((lift, index) => {
 						return <tr>
-							<td></td>
-							<td className="px-3">{lift.name}</td>
-							<td>
-								<Button variant="danger">
-									{/* TODO: implement */}
-									Delete
-								</Button>
-							</td>
+							<td className="text-end">{!editing && index === 0 ? "Lifts" : undefined}</td>
+							<td className="px-3" colSpan={editing ? 1 : 2}>{lift.name}</td>
+							{editing ?
+								<td>
+									<Button variant="danger" onClick={() => {
+										setLifts(lifts.filter(check => check.slug !== lift.slug));
+									}}>
+										Delete
+									</Button>
+								</td> : undefined}
 						</tr>
 					}) : <tr>
-						<td></td>
-						<td><i>No lifts selected.</i></td>
+						<td className="text-end">{!editing && "Lifts"}</td>
+						<td colSpan={2} className="px-3"><i>No lifts selected.</i></td>
 					</tr>
 			}
 			<tr>

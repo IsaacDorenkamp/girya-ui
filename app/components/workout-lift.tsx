@@ -10,11 +10,12 @@ interface WorkoutLiftProps {
 	workout: string;
 	sets: Set[];  // filtered list of sets
 	lift: Lift;
+	className?: string;
 }
 
-export default function WorkoutLift({ workout, sets, lift }: WorkoutLiftProps) {
+export default function WorkoutLift({ workout, sets, lift, className }: WorkoutLiftProps) {
 	const { mutate: createSet, isPending: creatingSet } = useCreateWorkoutSet();
-	return <Accordion defaultActiveKey="item">
+	return <Accordion defaultActiveKey="item" className={className}>
 		<Accordion.Item eventKey="item">
 			<Accordion.Header><h5>{lift.name}&nbsp;<i className="text-muted">({sets.length} set{sets.length !== 1 ? "s" : ""})</i></h5></Accordion.Header>
 			<Accordion.Body>

@@ -4,7 +4,6 @@ import Button from "react-bootstrap/Button";
 import type { Lift } from "../types";
 import useUpdateLift from "../hooks/use-update-lift";
 import useDeleteLift from "../hooks/use-delete-lift";
-import usePreviousValue from "../hooks/use-previous-value";
 
 interface LiftItemProps {
 	lift: Lift;
