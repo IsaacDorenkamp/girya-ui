@@ -25,6 +25,14 @@ export default function Splits() {
 		setError(splitsError ?? undefined);
 	}
 
+	const updateName = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setName(event.target.value);
+	};
+
+	const updateSlug = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setSlug(event.target.value);
+	};
+
 	return <Container>
 		<h1>Splits</h1>
 		<hr />
@@ -32,7 +40,7 @@ export default function Splits() {
 			{error.response?.data.detail ?? "Unknown error"}
 		</Alert>}
 		{loadingSplits ? <><Loading /><br /></> : splits && <SplitList splits={splits} />}
-		<Button variant="success" className="mt-3">
+		<Button variant="success" className="mt-3" onClick={() => setCreating(true)}>
 			Create Split
 		</Button>
 		<Modal show={creating} onHide={() => setCreating(false)}>

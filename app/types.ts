@@ -32,6 +32,12 @@ export interface Split {
 	id: number;
 }
 
+export interface SplitInput {
+	name: string;
+	slug: string;
+	lifts: string[];
+}
+
 export interface Workout {
 	at: string;  // date as string
 	slug: string;
