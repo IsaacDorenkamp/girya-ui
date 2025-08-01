@@ -32,7 +32,13 @@ export default function Dashboard() {
 			<div className="d-flex flex-row">
 				<div className="flex-grow-1 pe-3">
 					{loadingSplits ? <Loading /> : <Form.Select value={split ?? ""} onChange={(event) => setSplit(event.target.value)}>
-						{splits ? splits.map(split => <option value={split.slug}>{split.name}</option>) : <option disabled value="">Failed to fetch splits</option>}
+						{splits ? 
+							(
+								splits.length > 0 ?
+									splits.map(split => <option value={split.slug}>{split.name}</option>) :
+									<option disabled value="">No splits available.</option>
+							) :
+							<option disabled value="">Failed to fetch splits</option>}
 					</Form.Select>}
 				</div>
 				<div>

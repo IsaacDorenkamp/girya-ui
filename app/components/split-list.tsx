@@ -156,7 +156,7 @@ function SplitEntry({ split }: SplitEntryProps) {
 }
 
 export default function SplitList({ splits }: SplitListProps) {
-	return splits.length === 0 ? <i>No splits.</i> :
+	return splits.length === 0 ? <><i>No splits.</i><br /></> :
 		splits.map((split, index) => <Accordion defaultActiveKey="split" className={index > 0 ? "mt-3" : undefined} key={split.slug}>
 		<Accordion.Item eventKey="split">
 			<Accordion.Header>{split.name}</Accordion.Header>
