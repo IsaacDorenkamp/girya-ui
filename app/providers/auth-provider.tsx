@@ -36,6 +36,7 @@ export default function AuthProvider(props: React.PropsWithChildren) {
 			if (error.response?.status === 401) {
 				const refreshToken = localStorage.getItem("refresh_token");
 				if (!refreshToken) {
+					localStorage.removeItem("access_token");
 					navigate("/auth/login");
 					return;
 				}
@@ -53,6 +54,11 @@ export default function AuthProvider(props: React.PropsWithChildren) {
 					return client.request(error.config);
 				} catch (e) {
 					console.error(e);
+					
+					// if we don't remove the tokens, a bad token could cause glitchy behavior,
+					// i.e. rapid redirection between the app and the login page.
+					localStorage.removeItem("access_token");
+					localStorage.removeItem("refresh_token");
 					navigate("/auth/login");
 				}
 			}
