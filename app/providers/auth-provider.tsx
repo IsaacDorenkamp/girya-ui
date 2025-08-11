@@ -1,19 +1,26 @@
-import React, { createContext, useContext, useEffect, useMemo } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import axios, { type Axios } from "axios";
 
 import config from "../config";
 
+export interface Tokens {
+	access: string;
+	refresh?: string;
+}
+
 export interface AuthContext {
 	client: Axios;
+	tokens?: Tokens;
 };
 
-const AuthContextInst = createContext({
+const AuthContextInst = createContext<AuthContext>({
 	client: axios.create(),
 });
 
 export default function AuthProvider(props: React.PropsWithChildren) {
 	const navigate = useNavigate();
+	const [tokens, setTokens] = useState<Tokens | undefined>();
 	const client = useMemo(() => {
 		const client = axios.create({
 			baseURL: config.api_host,
@@ -42,8 +49,10 @@ export default function AuthProvider(props: React.PropsWithChildren) {
 					const data = refreshResponse.data;
 					localStorage.setItem("access_token", data.access);
 					localStorage.setItem("refresh_token", data.refresh);
+					setTokens(data);
 					return client.request(error.config);
 				} catch (e) {
+					console.error(e);
 					navigate("/auth/login");
 				}
 			}
@@ -58,10 +67,16 @@ export default function AuthProvider(props: React.PropsWithChildren) {
 		if (!token) {
 			// TODO: better way to do this in an environment-agnostic way
 			navigate("/auth/login");
+		} else {
+			const tokens = {
+				access: token,
+				refresh: localStorage.getItem("refresh_token") ?? undefined,
+			}
+			setTokens(tokens);
 		}
 	}, []);
 
-	return <AuthContextInst.Provider value={{ client }}>
+	return <AuthContextInst.Provider value={{ client, tokens }}>
 		{props.children}
 	</AuthContextInst.Provider>;
 }

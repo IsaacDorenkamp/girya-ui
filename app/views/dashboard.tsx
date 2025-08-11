@@ -35,7 +35,7 @@ export default function Dashboard() {
 						{splits ? 
 							(
 								splits.length > 0 ?
-									splits.map(split => <option value={split.slug}>{split.name}</option>) :
+									splits.map(split => <option value={split.slug} key={split.slug}>{split.name}</option>) :
 									<option disabled value="">No splits available.</option>
 							) :
 							<option disabled value="">Failed to fetch splits</option>}

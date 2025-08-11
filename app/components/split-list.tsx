@@ -129,7 +129,7 @@ function SplitEntry({ split }: SplitEntryProps) {
 			{
 				lifts.length > 0 ?
 					lifts.map((lift, index) => {
-						return <tr>
+						return <tr key={lift.slug}>
 							<td className="text-end">{!editing && index === 0 ? "Lifts" : undefined}</td>
 							<td className="px-3" colSpan={editing ? 1 : 2}>{lift.name}</td>
 							{editing ?

@@ -8,9 +8,10 @@ import useUpdateWorkoutSet from "../hooks/use-update-workout-set";
 interface WorkoutSetProps {
 	set: Set;
 	workout: string;
+	editable?: boolean;
 }
 
-export default function WorkoutSet({ set, workout }: WorkoutSetProps) {
+export default function WorkoutSet({ set, workout, editable = true }: WorkoutSetProps) {
 	const [editing, setEditing] = useState<boolean>(false);
 	const [reps, setReps] = useState<number | undefined>(set.reps);
 	const [weight, setWeight] = useState<number | undefined>(set.weight);
@@ -70,15 +71,17 @@ export default function WorkoutSet({ set, workout }: WorkoutSetProps) {
 			{editing ? <input type="number" value={weight ?? ""} onChange={updateWeight} /> : set.weight}
 			{set.weight_unit}
 		</td>
-		<td className="align-middle">
-			<Button onClick={toggleEditing} disabled={editing && !valid}>
-				{updatingSet ? "Saving..." : (editing ? "Save" : "Edit")}
-			</Button>
-		</td>
-		<td className="align-middle">
-			<Button onClick={() => deleteSet(set.id)} disabled={deletingSet} variant="danger">
-				{deletingSet ? "Deleting..." : "Delete"}
-			</Button>
-		</td>
+		{editable && <>
+			<td className="align-middle">
+				<Button onClick={toggleEditing} disabled={editing && !valid}>
+					{updatingSet ? "Saving..." : (editing ? "Save" : "Edit")}
+				</Button>
+			</td>
+			<td className="align-middle">
+				<Button onClick={() => deleteSet(set.id)} disabled={deletingSet} variant="danger">
+					{deletingSet ? "Deleting..." : "Delete"}
+				</Button>
+			</td>
+		</>}
 	</tr>;
 }

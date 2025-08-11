@@ -5,9 +5,10 @@ import WorkoutSplit from "./workout-split";
 
 interface WorkoutListProps {
 	workouts: Workout[];
+	editable?: boolean;
 }
 
-export default function WorkoutList({ workouts }: WorkoutListProps) {
+export default function WorkoutList({ workouts, editable = true }: WorkoutListProps) {
 	let content;
 	if (workouts.length == 0) {
 		content = <i>No workouts available.</i>;
@@ -17,7 +18,7 @@ export default function WorkoutList({ workouts }: WorkoutListProps) {
 			const b_date = new Date(Date.parse(b.at));
 			return b_date.getTime() - a_date.getTime();
 		}).map((workout) => {
-			return <WorkoutSplit workout={workout} key={`workout-${workout.slug}`} />;			
+			return <WorkoutSplit workout={workout} key={`workout-${workout.slug}`} editable={editable} />;
 		});
 	}
 	return <Container className="mx-0 px-0 mb-3">

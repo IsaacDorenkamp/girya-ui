@@ -11,9 +11,10 @@ interface WorkoutLiftProps {
 	sets: Set[];  // filtered list of sets
 	lift: Lift;
 	className?: string;
+	editable?: boolean;
 }
 
-export default function WorkoutLift({ workout, sets, lift, className }: WorkoutLiftProps) {
+export default function WorkoutLift({ workout, sets, lift, className, editable = true }: WorkoutLiftProps) {
 	const { mutate: createSet, isPending: creatingSet } = useCreateWorkoutSet();
 	return <Accordion defaultActiveKey="item" className={className}>
 		<Accordion.Item eventKey="item">
@@ -24,20 +25,20 @@ export default function WorkoutLift({ workout, sets, lift, className }: WorkoutL
 						<tr>
 							<td>Reps</td>
 							<td>Weight</td>
-							<td></td>
-							<td></td>
+							{editable && <td colSpan={2}></td>}
 						</tr>
 					</thead>
 					<tbody>
-						{sets.map(set => <WorkoutSet set={set} workout={workout} key={`set-${set.id}`} />)}
+						{sets.map(set => <WorkoutSet set={set} workout={workout} key={`set-${set.id}`} editable={editable} />)}
 					</tbody>
 				</Table>: <div className="mb-3">No sets recorded.</div>}
-				<Button disabled={creatingSet} onClick={() => {
-					createSet({
-						workout,
-						lift: lift.slug,
-					});
-				}}>{creatingSet ? "Adding..." : "Add Set"}</Button>
+				{editable && 
+					<Button disabled={creatingSet} onClick={() => {
+						createSet({
+							workout,
+							lift: lift.slug,
+						});
+					}}>{creatingSet ? "Adding..." : "Add Set"}</Button>}
 			</Accordion.Body>
 		</Accordion.Item>
 	</Accordion>;
